@@ -1,4 +1,4 @@
-const express = require('express'); //forgive me, this is my first time using node.js
+const express = require('express'); // forgive me this is my first node.js creation i am not even sure if im writing this in typescript or javascript
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -8,14 +8,19 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: ['http://127.0.0.1:5500', 'https://mangycat.github.io'], // added cors because no worky
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+}));
 
-// Connect to SQLite3 database
+// Connect to SQLite database
 const db = new sqlite3.Database('leaderboard.db', (err) => {
     if (err) {
-        console.error('database error', err);
+        console.error('Error', err);
     } else {
-        console.log('Connected to database. YIPEEE');
+        console.log('Database success');
     }
 });
 
@@ -46,6 +51,11 @@ app.get('/leaderboard', (req, res) => {
     });
 });
 
+// Root endpoint
+app.get('/', (req, res) => {
+    res.send('Welcome to the Leaderboard API! Try accessing /submit-score or /leaderboard.');
+});
+
 app.listen(port, () => {
-    console.log(` running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });
