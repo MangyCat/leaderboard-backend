@@ -1,4 +1,4 @@
-const express = require('express'); // forgive me this is my first node.js creation i am not even sure if im writing this in typescript or javascript
+const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,20 +7,22 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json()); //frick it, let EVERYTHING through, removed all comments, improved writing logs, locked in
 app.use(cors({
-    origin: ['http://127.0.0.1:5500', 'https://mangycat.github.io'], // added cors because no worky
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 204,
+    allowedHeaders: '*',
+    exposedHeaders: '*'
 }));
 
 // Connect to SQLite database
 const db = new sqlite3.Database('leaderboard.db', (err) => {
     if (err) {
-        console.error('Error', err);
+        console.error('Error connecting to the database.', err);
     } else {
-        console.log('Database success');
+        console.log('Connected to the SQLite database.');
     }
 });
 
@@ -35,9 +37,9 @@ app.post('/submit-score', (req, res) => {
     const { name, score } = req.body;
     db.run(`INSERT INTO players (name, score) VALUES (?, ?)`, [name, score], function(err) {
         if (err) {
-            return res.status(500).send('submission error');
+            return res.status(500).send('Error submitting score');
         }
-        res.send('submitted');
+        res.send('Score submitted!');
     });
 });
 
@@ -45,7 +47,7 @@ app.post('/submit-score', (req, res) => {
 app.get('/leaderboard', (req, res) => {
     db.all("SELECT * FROM players ORDER BY score DESC", [], (err, rows) => {
         if (err) {
-            return res.status(500).send('retrieval error');
+            return res.status(500).send('Error retrieving leaderboard');
         }
         res.json(rows);
     });
