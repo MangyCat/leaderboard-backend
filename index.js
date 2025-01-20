@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({ origin: '*' })); // Allow all origins, for future use
+app.use(cors()); // Enable CORS for all origins and methods
 
 // Connect to SQLite database
 const db = new sqlite3.Database('leaderboard.db', (err) => {
