@@ -1,19 +1,13 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Ensure the database directory exists
-const dbPath = path.join(__dirname, 'leaderboard.db');
-const dbDir = path.dirname(dbPath);
-
-if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
-}
+// Use /tmp directory for writable access
+const dbPath = path.join('/tmp', 'leaderboard.db');
 
 // Middleware
 app.use(bodyParser.json());
