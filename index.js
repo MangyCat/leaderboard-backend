@@ -7,15 +7,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(bodyParser.json()); //frick it, let EVERYTHING through, removed all comments, improved writing logs, locked in
-app.use(cors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    allowedHeaders: '*',
-    exposedHeaders: '*'
-}));
+app.use(bodyParser.json());
+app.use(cors({ origin: '*' })); // Allow all origins, for future use
 
 // Connect to SQLite database
 const db = new sqlite3.Database('leaderboard.db', (err) => {
